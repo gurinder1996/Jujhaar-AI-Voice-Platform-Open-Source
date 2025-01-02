@@ -4,36 +4,42 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-const agentDesignPaths = ['/agent-design', '/knowledge-base', '/workflows', '/settings', '/functions']
+const agentDesignPaths = [
+  '/agents/design',
+  '/agents/knowledge-base',
+  '/agents/workflows',
+  '/agents/settings',
+  '/agents/functions'
+]
 
 export function TopNavTabs() {
   const pathname = usePathname()
 
   // Only show tabs on agent design related pages
-  if (!agentDesignPaths.includes(pathname)) {
+  if (!agentDesignPaths.some(path => pathname.startsWith(path))) {
     return null
   }
 
   const tabs = [
     {
       label: "Agent Design",
-      href: "/agent-design",
+      href: "/agents/design",
     },
     {
       label: "Knowledge Base",
-      href: "/knowledge-base",
+      href: "/agents/knowledge-base",
     },
     {
       label: "Workflows",
-      href: "/workflows",
+      href: "/agents/workflows",
     },
     {
       label: "Functions",
-      href: "/functions",
+      href: "/agents/functions",
     },
     {
       label: "Settings",
-      href: "/settings",
+      href: "/agents/settings",
     },
   ]
 

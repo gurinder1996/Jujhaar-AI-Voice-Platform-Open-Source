@@ -27,7 +27,7 @@ export function Sidebar() {
     {
       label: "Dashboard",
       icon: LayoutDashboard,
-      href: "/",
+      href: "/dashboard",
       section: "main"
     },
     {
@@ -38,8 +38,8 @@ export function Sidebar() {
     },
     {
       label: "Agent Design",
-      icon: PhoneIcon,
-      href: "/agent-design",
+      icon: GitBranch,
+      href: "/agents/design",
       section: "main"
     },
     {
@@ -51,7 +51,7 @@ export function Sidebar() {
     {
       label: "Call History",
       icon: History,
-      href: "/call-history",
+      href: "/agents/call-history",
       section: "main"
     },
     {
@@ -61,21 +61,9 @@ export function Sidebar() {
       section: "secondary"
     },
     {
-      label: "Referrals",
-      icon: Share2,
-      href: "/referrals",
-      section: "secondary"
-    },
-    {
       label: "Help Center",
       icon: HelpCircle,
       href: "/help",
-      section: "secondary"
-    },
-    {
-      label: "Log out",
-      icon: LogOut,
-      href: "/logout",
       section: "secondary"
     }
   ]

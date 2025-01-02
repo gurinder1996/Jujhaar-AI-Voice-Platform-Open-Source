@@ -7,7 +7,7 @@ import { OrganizationInfo } from "./organization-info"
 import { SettingsTabs } from "./settings-tabs"
 import { SettingsTabContent } from "./tabs/settings-tab-content"
 
-export default function SettingsPage() {
+export function SettingsPage() {
   const [activeTab, setActiveTab] = useState("general")
 
   return (

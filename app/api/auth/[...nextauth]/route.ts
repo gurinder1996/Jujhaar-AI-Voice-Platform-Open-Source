@@ -1,14 +1,9 @@
-import NextAuth from 'next-auth';
+import NextAuth, { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
 import { supabase } from '@/lib/supabase';
 
-const handler = NextAuth({
+export const authOptions: AuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -46,16 +41,13 @@ const handler = NextAuth({
     error: '/sign-in',
   },
   callbacks: {
-    async jwt({ token, user, account, profile, trigger }) {
-      // Initial sign in
-      if (account && user) {
+    async jwt({ token, user }) {
+      if (user) {
         return {
           ...token,
           ...user,
         };
       }
-
-      // Return previous token if the session exists
       return token;
     },
     async session({ session, token }) {
@@ -67,7 +59,6 @@ const handler = NextAuth({
   },
   events: {
     async signOut({ token }) {
-      // Sign out from Supabase when signing out from NextAuth
       await supabase.auth.signOut();
     },
   },
@@ -76,6 +67,8 @@ const handler = NextAuth({
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   debug: process.env.NODE_ENV === 'development',
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

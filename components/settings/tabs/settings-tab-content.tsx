@@ -3,7 +3,7 @@
 import { VoiceEngineSettings } from "./voice-engine-settings"
 import { NotificationSettings } from "./notification-settings"
 import { AdvancedSettings } from "./advanced-settings"
-import { GeneralSettings } from "../general-settings"
+import { GeneralSettings } from "./general-settings"
 import { TranscriberSettings } from "./transcriber-settings"
 
 interface SettingsTabContentProps {

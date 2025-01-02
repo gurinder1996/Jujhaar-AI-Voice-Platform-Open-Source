@@ -50,13 +50,16 @@ export default withAuth(middleware, {
   },
 });
 
+// Update the matcher config to include all protected routes
 export const config = {
   matcher: [
     // Protected routes
     '/dashboard/:path*',
-    '/settings/:path*',
     '/agents/:path*',
+    '/simulation/:path*',
     '/calls/:path*',
+    '/settings/:path*',
+    '/help/:path*',
     // Auth routes
     '/sign-in',
     '/sign-up',
