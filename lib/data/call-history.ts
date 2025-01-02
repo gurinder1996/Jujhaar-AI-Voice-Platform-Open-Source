@@ -1,0 +1,297 @@
+export interface CallRecord {
+  time: string
+  duration: string
+  type: string
+  cost: string
+  callId: string
+  disconnectionReason: string
+  callStatus: string
+  userSentiment: string
+  from: string
+  to: string
+  callSuccessful: boolean
+  endToEndLatency: string
+}
+
+export const callHistoryData: CallRecord[] = [
+  {
+    time: "12/20/2024 15:56",
+    duration: "1:48",
+    type: "web_call",
+    cost: "$0.234",
+    callId: "call_dff648f2f720fce84ecd19fcbf2",
+    disconnectionReason: "user hangup",
+    callStatus: "ended",
+    userSentiment: "Neutral",
+    from: "+1 (555) 123-4567",
+    to: "+1 (555) 987-6543",
+    callSuccessful: false,
+    endToEndLatency: "1388ms"
+  },
+  {
+    time: "12/20/2024 15:54",
+    duration: "0:11",
+    type: "web_call",
+    cost: "$0.022",
+    callId: "call_71677a11bda349ee6395c9e256f",
+    disconnectionReason: "user hangup",
+    callStatus: "ended",
+    userSentiment: "Neutral",
+    from: "+1 (555) 234-5678",
+    to: "+1 (555) 876-5432",
+    callSuccessful: false,
+    endToEndLatency: "1196ms"
+  },
+  {
+    time: "12/20/2024 15:32",
+    duration: "3:24",
+    type: "phone_call",
+    cost: "$0.408",
+    callId: "call_9e8d7f6e5d4c3b2a1098765432",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 345-6789",
+    to: "+1 (555) 765-4321",
+    callSuccessful: true,
+    endToEndLatency: "1245ms"
+  },
+  {
+    time: "12/20/2024 14:15",
+    duration: "2:37",
+    type: "web_call",
+    cost: "$0.315",
+    callId: "call_1a2b3c4d5e6f7g8h9i0j1k2l3",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 456-7890",
+    to: "+1 (555) 654-3210",
+    callSuccessful: true,
+    endToEndLatency: "1322ms"
+  },
+  {
+    time: "12/20/2024 13:45",
+    duration: "0:45",
+    type: "phone_call",
+    cost: "$0.090",
+    callId: "call_2b3c4d5e6f7g8h9i0j1k2l3m4",
+    disconnectionReason: "user hangup",
+    callStatus: "ended",
+    userSentiment: "Negative",
+    from: "+1 (555) 567-8901",
+    to: "+1 (555) 543-2109",
+    callSuccessful: false,
+    endToEndLatency: "1433ms"
+  },
+  {
+    time: "12/20/2024 12:30",
+    duration: "4:12",
+    type: "web_call",
+    cost: "$0.504",
+    callId: "call_3c4d5e6f7g8h9i0j1k2l3m4n5",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 678-9012",
+    to: "+1 (555) 432-1098",
+    callSuccessful: true,
+    endToEndLatency: "1156ms"
+  },
+  {
+    time: "12/20/2024 11:20",
+    duration: "1:55",
+    type: "phone_call",
+    cost: "$0.230",
+    callId: "call_4d5e6f7g8h9i0j1k2l3m4n5o6",
+    disconnectionReason: "system error",
+    callStatus: "ended",
+    userSentiment: "Neutral",
+    from: "+1 (555) 789-0123",
+    to: "+1 (555) 321-0987",
+    callSuccessful: false,
+    endToEndLatency: "1677ms"
+  },
+  {
+    time: "12/20/2024 10:05",
+    duration: "2:48",
+    type: "web_call",
+    cost: "$0.336",
+    callId: "call_5e6f7g8h9i0j1k2l3m4n5o6p7",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 890-1234",
+    to: "+1 (555) 210-9876",
+    callSuccessful: true,
+    endToEndLatency: "1288ms"
+  },
+  {
+    time: "12/19/2024 16:45",
+    duration: "3:15",
+    type: "phone_call",
+    cost: "$0.390",
+    callId: "call_6f7g8h9i0j1k2l3m4n5o6p7q8",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 901-2345",
+    to: "+1 (555) 109-8765",
+    callSuccessful: true,
+    endToEndLatency: "1422ms"
+  },
+  {
+    time: "12/19/2024 15:30",
+    duration: "0:32",
+    type: "web_call",
+    cost: "$0.064",
+    callId: "call_7g8h9i0j1k2l3m4n5o6p7q8r9",
+    disconnectionReason: "user hangup",
+    callStatus: "ended",
+    userSentiment: "Negative",
+    from: "+1 (555) 012-3456",
+    to: "+1 (555) 098-7654",
+    callSuccessful: false,
+    endToEndLatency: "1533ms"
+  },
+  {
+    time: "12/19/2024 14:15",
+    duration: "5:22",
+    type: "phone_call",
+    cost: "$0.644",
+    callId: "call_8h9i0j1k2l3m4n5o6p7q8r9s0",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 123-4567",
+    to: "+1 (555) 987-6543",
+    callSuccessful: true,
+    endToEndLatency: "1244ms"
+  },
+  {
+    time: "12/19/2024 13:00",
+    duration: "2:18",
+    type: "web_call",
+    cost: "$0.276",
+    callId: "call_9i0j1k2l3m4n5o6p7q8r9s0t1",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Neutral",
+    from: "+1 (555) 234-5678",
+    to: "+1 (555) 876-5432",
+    callSuccessful: true,
+    endToEndLatency: "1355ms"
+  },
+  {
+    time: "12/19/2024 11:45",
+    duration: "1:05",
+    type: "phone_call",
+    cost: "$0.130",
+    callId: "call_0j1k2l3m4n5o6p7q8r9s0t1u2",
+    disconnectionReason: "user hangup",
+    callStatus: "ended",
+    userSentiment: "Negative",
+    from: "+1 (555) 345-6789",
+    to: "+1 (555) 765-4321",
+    callSuccessful: false,
+    endToEndLatency: "1466ms"
+  },
+  {
+    time: "12/19/2024 10:30",
+    duration: "4:45",
+    type: "web_call",
+    cost: "$0.570",
+    callId: "call_1k2l3m4n5o6p7q8r9s0t1u2v3",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 456-7890",
+    to: "+1 (555) 654-3210",
+    callSuccessful: true,
+    endToEndLatency: "1277ms"
+  },
+  {
+    time: "12/19/2024 09:15",
+    duration: "3:33",
+    type: "phone_call",
+    cost: "$0.426",
+    callId: "call_2l3m4n5o6p7q8r9s0t1u2v3w4",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 567-8901",
+    to: "+1 (555) 543-2109",
+    callSuccessful: true,
+    endToEndLatency: "1388ms"
+  },
+  {
+    time: "12/19/2024 08:00",
+    duration: "0:58",
+    type: "web_call",
+    cost: "$0.116",
+    callId: "call_3m4n5o6p7q8r9s0t1u2v3w4x5",
+    disconnectionReason: "system error",
+    callStatus: "ended",
+    userSentiment: "Neutral",
+    from: "+1 (555) 678-9012",
+    to: "+1 (555) 432-1098",
+    callSuccessful: false,
+    endToEndLatency: "1599ms"
+  },
+  {
+    time: "12/18/2024 17:45",
+    duration: "2:25",
+    type: "phone_call",
+    cost: "$0.290",
+    callId: "call_4n5o6p7q8r9s0t1u2v3w4x5y6",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 789-0123",
+    to: "+1 (555) 321-0987",
+    callSuccessful: true,
+    endToEndLatency: "1311ms"
+  },
+  {
+    time: "12/18/2024 16:30",
+    duration: "1:42",
+    type: "web_call",
+    cost: "$0.204",
+    callId: "call_5o6p7q8r9s0t1u2v3w4x5y6z7",
+    disconnectionReason: "user hangup",
+    callStatus: "ended",
+    userSentiment: "Negative",
+    from: "+1 (555) 890-1234",
+    to: "+1 (555) 210-9876",
+    callSuccessful: false,
+    endToEndLatency: "1444ms"
+  },
+  {
+    time: "12/18/2024 15:15",
+    duration: "3:50",
+    type: "phone_call",
+    cost: "$0.460",
+    callId: "call_6p7q8r9s0t1u2v3w4x5y6z7a8",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Positive",
+    from: "+1 (555) 901-2345",
+    to: "+1 (555) 109-8765",
+    callSuccessful: true,
+    endToEndLatency: "1266ms"
+  },
+  {
+    time: "12/18/2024 14:00",
+    duration: "2:55",
+    type: "web_call",
+    cost: "$0.350",
+    callId: "call_7q8r9s0t1u2v3w4x5y6z7a8b9",
+    disconnectionReason: "completed",
+    callStatus: "ended",
+    userSentiment: "Neutral",
+    from: "+1 (555) 012-3456",
+    to: "+1 (555) 098-7654",
+    callSuccessful: true,
+    endToEndLatency: "1377ms"
+  }
+]
