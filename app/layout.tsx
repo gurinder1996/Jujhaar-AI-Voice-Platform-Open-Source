@@ -1,8 +1,9 @@
-import './globals.css'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Sidebar } from '@/components/sidebar'
 import { TopNav } from '@/components/top-nav'
+import { AuthProvider } from '@/components/providers/auth-provider'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,23 +19,26 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head />
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="flex min-h-screen">
-            <Sidebar />
-            <div className="flex-1">
-              <TopNav />
-              <main className="min-h-screen bg-background px-8 py-6">
-                {children}
-              </main>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={false}
+            disableTransitionOnChange
+          >
+            <div className="flex min-h-screen bg-background">
+              <Sidebar />
+              <div className="flex-1">
+                <TopNav />
+                <main className="min-h-screen bg-background px-8 py-6">
+                  {children}
+                </main>
+              </div>
             </div>
-          </div>
-        </ThemeProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   )
