@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useAuth } from '@/hooks/use-auth'
+import { signOut } from 'next-auth/react'
 import {
   LayoutDashboard,
   BookOpen,
@@ -18,10 +20,20 @@ import {
   PlayCircle,
   Users
 } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback } from "./ui/avatar"
 
 export function Sidebar() {
   const pathname = usePathname()
   const [isHovered, setIsHovered] = useState(false)
+  const { isAuthenticated, user } = useAuth()
 
   const routes = [
     {
@@ -72,7 +84,7 @@ export function Sidebar() {
   const secondaryRoutes = routes.filter(route => route.section === "secondary")
 
   return (
-    <div className="relative">
+    <>
       <div
         className={cn(
           "fixed left-0 top-0 z-30 flex h-full flex-col border-r bg-card transition-all duration-300",
@@ -99,38 +111,81 @@ export function Sidebar() {
               className={cn(
                 "w-full justify-start",
                 pathname === route.href && "bg-secondary",
-                !isHovered && "px-2"
+                !isHovered && "justify-center"
               )}
               asChild
             >
               <Link href={route.href}>
-                <route.icon className="h-4 w-4" />
+                <route.icon className="h-5 w-5" />
                 {isHovered && <span className="ml-2">{route.label}</span>}
               </Link>
             </Button>
           ))}
         </div>
 
-        <div className="mt-auto space-y-1 border-t p-2">
+        <div className="space-y-1 border-t p-2">
           {secondaryRoutes.map((route) => (
             <Button
               key={route.href}
               variant="ghost"
               className={cn(
                 "w-full justify-start",
-                !isHovered && "px-2"
+                !isHovered && "justify-center"
               )}
               asChild
             >
               <Link href={route.href}>
-                <route.icon className="h-4 w-4" />
+                <route.icon className="h-5 w-5" />
                 {isHovered && <span className="ml-2">{route.label}</span>}
               </Link>
             </Button>
           ))}
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className={cn(
+                  "w-full",
+                  isHovered ? "justify-start" : "justify-center"
+                )}
+              >
+                <Avatar className="h-6 w-6">
+                  <AvatarFallback className="text-xs">
+                    {user?.name?.[0] || user?.email?.[0] || '?'}
+                  </AvatarFallback>
+                </Avatar>
+                {isHovered && (
+                  <span className="ml-2">{user?.name || user?.email}</span>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {isAuthenticated ? (
+                <>
+                  <DropdownMenuLabel>{user?.name || user?.email}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => signOut()}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link href="/auth/signin">Sign In</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/auth/signup">Sign Up</Link>
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-      <div className="w-16" aria-hidden="true" />
-    </div>
+      {/* Add a spacer div to offset the main content */}
+      <div className="w-16 flex-shrink-0" aria-hidden="true" />
+    </>
   )
 }

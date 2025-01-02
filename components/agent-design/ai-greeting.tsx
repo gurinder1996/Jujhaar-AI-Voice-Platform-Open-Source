@@ -1,10 +1,38 @@
 "use client"
 
+import { useState, useEffect } from "react"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Shield } from "lucide-react"
 
-export function AIGreeting() {
+interface AIGreetingProps {
+  agent?: any
+}
+
+export function AIGreeting({ agent }: AIGreetingProps) {
+  const [greeting, setGreeting] = useState("")
+  const supabase = createClientComponentClient()
+
+  useEffect(() => {
+    if (agent) {
+      setGreeting(agent.greeting || "")
+    }
+  }, [agent])
+
+  const updateGreeting = async (newGreeting: string) => {
+    if (agent?.id) {
+      const { error } = await supabase
+        .from("agents")
+        .update({ greeting: newGreeting })
+        .eq("id", agent.id)
+
+      if (!error) {
+        setGreeting(newGreeting)
+      }
+    }
+  }
+
   return (
     <Card className="p-6">
       <div className="mb-4 flex items-center gap-2">
@@ -18,6 +46,8 @@ export function AIGreeting() {
         <div className="text-sm font-medium">Greeting Message</div>
         <div className="relative">
           <Textarea
+            value={greeting}
+            onChange={(e) => updateGreeting(e.target.value)}
             placeholder="Thank you for calling Jujhaar AI! How can I help you today?"
             className="min-h-[100px] resize-none pr-24"
           />

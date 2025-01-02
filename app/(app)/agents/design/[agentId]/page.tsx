@@ -1,20 +1,64 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { useParams } from "next/navigation"
 import { AIGreeting } from "@/components/agent-design/ai-greeting"
 import { PersonalityGuidelines } from "@/components/agent-design/personality-guidelines"
 import { FrequentlyAskedQuestions } from "@/components/agent-design/frequently-asked-questions"
 import { TabButton } from "@/components/agent-design/tabs/tab-button"
 
 export default function AgentDesignPage() {
+  const params = useParams()
+  const agentId = params.agentId as string
   const [activeTab, setActiveTab] = useState<"personality" | "faq">("personality")
-  const [currentAgent, setCurrentAgent] = useState(null)
+  const [agent, setAgent] = useState(null)
   const supabase = createClientComponentClient()
+
+  useEffect(() => {
+    const fetchAgent = async () => {
+      const { data, error } = await supabase
+        .from("agents")
+        .select("*")
+        .eq("id", agentId)
+        .single()
+
+      if (data) {
+        setAgent(data)
+      }
+    }
+
+    if (agentId) {
+      fetchAgent()
+    }
+  }, [agentId])
+
+  // Subscribe to real-time changes
+  useEffect(() => {
+    const channel = supabase
+      .channel(`agent_${agentId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "agents",
+          filter: `id=eq.${agentId}`,
+        },
+        (payload) => {
+          setAgent(payload.new)
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [agentId])
 
   return (
     <div className="space-y-8">
-      <AIGreeting />
+      <AIGreeting agent={agent} />
       
       <div>
         <div className="mb-6 border-b">
@@ -35,9 +79,9 @@ export default function AgentDesignPage() {
         </div>
 
         {activeTab === "personality" ? (
-          <PersonalityGuidelines />
+          <PersonalityGuidelines agent={agent} />
         ) : (
-          <FrequentlyAskedQuestions />
+          <FrequentlyAskedQuestions agent={agent} />
         )}
       </div>
     </div>

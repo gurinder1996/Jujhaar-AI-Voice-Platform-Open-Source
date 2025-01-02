@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { AgentSelector } from "@/components/agent-selector/agent-selector"
 
 const agentDesignPaths = [
   '/agents/design',
@@ -44,23 +45,26 @@ export function TopNavTabs() {
   ]
 
   return (
-    <div className="flex justify-center border-b bg-[#F8F9FC]">
-      <div className="flex">
+    <div className="flex h-14 items-center justify-between border-b bg-[#F8F9FC] px-6">
+      <div className="w-[240px]">
+        <AgentSelector />
+      </div>
+      <div className="flex-1 flex justify-center">
         {tabs.map((tab) => (
           <Link
             key={tab.href}
             href={tab.href}
             className={cn(
-              "px-4 py-2 text-sm font-medium transition-colors",
-              pathname === tab.href
-                ? "bg-white text-foreground"
-                : "text-muted-foreground hover:bg-white/50 hover:text-foreground"
+              "px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground",
+              pathname.startsWith(tab.href) &&
+                "border-b-2 border-primary text-foreground"
             )}
           >
             {tab.label}
           </Link>
         ))}
       </div>
+      <div className="w-[240px]" />
     </div>
   )
 }

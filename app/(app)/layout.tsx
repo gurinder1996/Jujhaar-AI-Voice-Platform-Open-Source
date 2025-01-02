@@ -8,16 +8,14 @@ export default function AppLayout({
   children: React.ReactNode
 }) {
   return (
-    <AuthGuard>
-      <div className="flex min-h-screen bg-background">
-        <Sidebar />
-        <div className="flex-1">
-          <TopNav />
-          <main className="min-h-screen bg-background px-8 py-6">
-            {children}
-          </main>
-        </div>
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <div className="flex-1">
+        <TopNav />
+        <main className="p-6">
+          {children}
+        </main>
       </div>
-    </AuthGuard>
+    </div>
   )
 }
