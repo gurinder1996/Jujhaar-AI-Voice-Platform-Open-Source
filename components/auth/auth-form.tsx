@@ -37,13 +37,16 @@ export function AuthForm({ className }: AuthFormProps) {
         })
 
         if (result?.error) {
-          setError("Invalid email or password")
+          setError(result.error)
           return
         }
 
-        router.push("/dashboard")
+        // Get the callback URL from the query parameters or default to dashboard
+        const searchParams = new URLSearchParams(window.location.search)
+        const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
+        router.push(callbackUrl)
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -51,15 +54,15 @@ export function AuthForm({ className }: AuthFormProps) {
           },
         })
 
-        if (error) {
-          setError(error.message)
+        if (signUpError) {
+          setError(signUpError.message)
           return
         }
 
-        setError("Check your email to confirm your account")
+        setError("Please check your email to verify your account")
       }
     } catch (err) {
-      setError("An error occurred. Please try again.")
+      setError(err instanceof Error ? err.message : "An error occurred")
     } finally {
       setLoading(false)
     }

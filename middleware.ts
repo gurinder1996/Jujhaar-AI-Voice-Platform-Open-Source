@@ -4,24 +4,21 @@ import { NextResponse } from 'next/server';
 // This function will be executed before withAuth
 function middleware(req) {
   const { pathname } = req.nextUrl;
-  const isAuthPage = pathname.startsWith('/sign-in');
-  const isPublicPage = pathname.startsWith('/api/auth') || pathname.startsWith('/auth/callback');
+  
+  // Public paths that don't need auth
+  const isPublicPath = pathname.startsWith('/sign-in') || 
+                      pathname.startsWith('/sign-up') || 
+                      pathname.startsWith('/api/auth') || 
+                      pathname.startsWith('/auth/callback');
 
-  // If it's an auth page and user is authenticated, redirect to dashboard
-  if (isAuthPage && req.nextauth?.token) {
+  // If user is authenticated and trying to access auth pages, redirect to dashboard
+  if (req.nextauth?.token && isPublicPath) {
     return NextResponse.redirect(new URL('/dashboard', req.url));
   }
 
-  // If it's a public page, allow access
-  if (isPublicPage) {
-    return NextResponse.next();
-  }
-
-  // If user is not authenticated and not on an auth page, redirect to sign-in
-  if (!req.nextauth?.token && !isAuthPage) {
-    const signInUrl = new URL('/sign-in', req.url);
-    signInUrl.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(signInUrl);
+  // If user is not authenticated and trying to access protected routes
+  if (!req.nextauth?.token && !isPublicPath) {
+    return NextResponse.redirect(new URL('/sign-in', req.url));
   }
 
   // Add CORS headers for API routes
@@ -40,8 +37,11 @@ export default withAuth(middleware, {
   callbacks: {
     authorized: ({ token, req }) => {
       const { pathname } = req.nextUrl;
-      // Allow access to auth pages without a token
-      if (pathname.startsWith('/sign-in') || pathname.startsWith('/api/auth') || pathname.startsWith('/auth/callback')) {
+      // Allow access to public paths without a token
+      if (pathname.startsWith('/sign-in') || 
+          pathname.startsWith('/sign-up') || 
+          pathname.startsWith('/api/auth') || 
+          pathname.startsWith('/auth/callback')) {
         return true;
       }
       // Require token for all other routes
@@ -59,6 +59,7 @@ export const config = {
     '/calls/:path*',
     // Auth routes
     '/sign-in',
+    '/sign-up',
     // API routes
     '/api/:path*',
     // Root route

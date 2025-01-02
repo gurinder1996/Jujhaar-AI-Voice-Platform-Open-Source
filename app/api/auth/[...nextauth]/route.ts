@@ -17,7 +17,7 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          throw new Error('Please enter your email and password');
         }
 
         const { data: { user }, error } = await supabase.auth.signInWithPassword({
@@ -25,8 +25,12 @@ const handler = NextAuth({
           password: credentials.password,
         });
 
-        if (error || !user) {
-          return null;
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        if (!user) {
+          throw new Error('Invalid email or password');
         }
 
         return {
@@ -37,27 +41,21 @@ const handler = NextAuth({
       }
     }),
   ],
-  session: {
-    strategy: 'jwt',
+  pages: {
+    signIn: '/sign-in',
+    error: '/sign-in',
   },
   callbacks: {
-    async jwt({ token, user, account }) {
-      if (user) {
-        token.id = user.id;
+    async jwt({ token, user, account, profile, trigger }) {
+      // Initial sign in
+      if (account && user) {
+        return {
+          ...token,
+          ...user,
+        };
       }
-      // If using Google auth, create or link Supabase account
-      if (account?.provider === 'google') {
-        const { data: { user: supabaseUser }, error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            idToken: account.id_token,
-          },
-        });
-        
-        if (supabaseUser) {
-          token.id = supabaseUser.id;
-        }
-      }
+
+      // Return previous token if the session exists
       return token;
     },
     async session({ session, token }) {
@@ -67,10 +65,17 @@ const handler = NextAuth({
       return session;
     },
   },
-  pages: {
-    signIn: '/sign-in',
-    error: '/sign-in',
+  events: {
+    async signOut({ token }) {
+      // Sign out from Supabase when signing out from NextAuth
+      await supabase.auth.signOut();
+    },
   },
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  debug: process.env.NODE_ENV === 'development',
 });
 
 export { handler as GET, handler as POST };
