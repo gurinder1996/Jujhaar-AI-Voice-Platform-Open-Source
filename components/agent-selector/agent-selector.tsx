@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { NewAgentDialog } from "./new-agent-dialog"
 
 type Agent = {
   id: string
@@ -29,6 +30,7 @@ export function AgentSelector() {
   const [open, setOpen] = useState(false)
   const [agents, setAgents] = useState<Agent[]>([])
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
+  const [showNewAgentDialog, setShowNewAgentDialog] = useState(false)
   const router = useRouter()
   const supabase = createClientComponentClient()
 
@@ -68,53 +70,73 @@ export function AgentSelector() {
   }
 
   const handleCreateAgent = () => {
-    router.push("/agents/create")
+    setOpen(false)
+    setShowNewAgentDialog(true)
+  }
+
+  const handleAgentCreated = () => {
+    // Refresh the agents list
+    const fetchAgents = async () => {
+      const { data } = await supabase.from("agents").select("id, name").order("name")
+      if (data) {
+        setAgents(data)
+      }
+    }
+    fetchAgents()
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          <div className="flex items-center gap-2">
-            {selectedAgent?.name ?? "Select an agent..."}
-          </div>
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search agent..." className="h-9" />
-          <CommandList>
-            <CommandEmpty>No agent found.</CommandEmpty>
-            <CommandGroup>
-              {Array.isArray(agents) && agents.map((agent) => (
+    <>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-[200px] justify-between"
+          >
+            <div className="flex items-center gap-2">
+              {selectedAgent?.name ?? "Select an agent..."}
+            </div>
+            <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[200px] p-0">
+          <Command>
+            <CommandInput placeholder="Search agent..." className="h-9" />
+            <CommandList>
+              <CommandEmpty>No agent found.</CommandEmpty>
+              <CommandGroup>
+                {Array.isArray(agents) && agents.map((agent) => (
+                  <CommandItem
+                    key={agent.id}
+                    onSelect={() => handleAgentSelect(agent)}
+                    className="cursor-pointer"
+                  >
+                    {agent.name}
+                    {selectedAgent?.id === agent.id && (
+                      <Check className="ml-auto h-4 w-4" />
+                    )}
+                  </CommandItem>
+                ))}
                 <CommandItem
-                  key={agent.id}
-                  onSelect={() => handleAgentSelect(agent)}
-                  className="cursor-pointer"
+                  onSelect={handleCreateAgent}
+                  className="cursor-pointer border-t"
                 >
-                  {agent.name}
-                  {selectedAgent?.id === agent.id && (
-                    <Check className="ml-auto h-4 w-4" />
-                  )}
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Agent
                 </CommandItem>
-              ))}
-              <CommandItem
-                onSelect={handleCreateAgent}
-                className="cursor-pointer border-t"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Create Agent
-              </CommandItem>
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+
+      <NewAgentDialog 
+        open={showNewAgentDialog}
+        onOpenChange={setShowNewAgentDialog}
+        onAgentCreated={handleAgentCreated}
+      />
+    </>
   )
 }
