@@ -2,34 +2,51 @@
 
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
+import { useParams } from "next/navigation"
+import { useAgentField } from "@/hooks/use-agent-field"
 
 interface SliderSettingProps {
   label: string
-  value: number
-  description?: string
-  min?: number
-  max?: number
-  step?: number
+  description: string
+  fieldPath: string[]
 }
 
 export function SliderSetting({ 
   label, 
-  value, 
-  description, 
-  min = 0, 
-  max = 1, 
-  step = 0.1 
+  description,
+  fieldPath
 }: SliderSettingProps) {
+  const { agentId } = useParams()
+  
+  const {
+    value,
+    error,
+    onChange,
+    onBlur
+  } = useAgentField(
+    agentId as string,
+    fieldPath,
+    'voice_config',
+    0.5
+  )
+
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <Label>{label}</Label>
-        <span className="text-sm">{value}</span>
-      </div>
-      {description && (
-        <p className="text-sm text-muted-foreground">{description}</p>
+      <Label>{label}</Label>
+      <p className="text-sm text-muted-foreground">
+        {description}
+      </p>
+      <Slider 
+        value={[value]} 
+        onValueChange={([newValue]) => onChange(newValue)}
+        onValueCommit={onBlur}
+        min={0} 
+        max={1} 
+        step={0.1} 
+      />
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
       )}
-      <Slider defaultValue={[value]} min={min} max={max} step={step} />
     </div>
   )
 }

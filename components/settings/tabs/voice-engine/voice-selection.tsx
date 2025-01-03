@@ -3,8 +3,9 @@
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Search } from "lucide-react"
+import { useParams } from "next/navigation"
+import { useAgentField } from "@/hooks/use-agent-field"
 
 const providers = [
   "Cartesia",
@@ -58,27 +59,80 @@ const models = [
 ]
 
 export function VoiceSelection() {
+  const { agentId } = useParams()
+  
+  const {
+    value: provider,
+    error: providerError,
+    onChange: onProviderChange,
+    onBlur: onProviderBlur
+  } = useAgentField(
+    agentId as string,
+    ['voice_config', 'provider'],
+    'voice_config',
+    '11Labs'
+  )
+
+  const {
+    value: voiceId,
+    error: voiceError,
+    onChange: onVoiceChange,
+    onBlur: onVoiceBlur
+  } = useAgentField(
+    agentId as string,
+    ['voice_config', 'voiceId'],
+    'voice_config',
+    'Sarah'
+  )
+
+  const {
+    value: model,
+    error: modelError,
+    onChange: onModelChange,
+    onBlur: onModelBlur
+  } = useAgentField(
+    agentId as string,
+    ['voice_config', 'model'],
+    'voice_config',
+    'eleven-flash-v2'
+  )
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <Label>Provider</Label>
-        <Select defaultValue="11Labs">
+        <Select 
+          value={provider} 
+          onValueChange={(value) => {
+            onProviderChange(value)
+            onProviderBlur()
+          }}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-popover">
-            {providers.map((provider) => (
-              <SelectItem key={provider} value={provider}>
-                {provider}
+            {providers.map((p) => (
+              <SelectItem key={p} value={p}>
+                {p}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
+        {providerError && (
+          <p className="text-sm text-destructive">{providerError}</p>
+        )}
       </div>
 
       <div className="space-y-2">
         <Label>Voice</Label>
-        <Select defaultValue="Sarah">
+        <Select 
+          value={voiceId}
+          onValueChange={(value) => {
+            onVoiceChange(value)
+            onVoiceBlur()
+          }}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -102,16 +156,9 @@ export function VoiceSelection() {
             ))}
           </SelectContent>
         </Select>
-      </div>
-
-      <div className="flex items-center space-x-2">
-        <Checkbox id="manual-voice" />
-        <label
-          htmlFor="manual-voice"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Add Voice ID Manually
-        </label>
+        {voiceError && (
+          <p className="text-sm text-destructive">{voiceError}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -119,7 +166,13 @@ export function VoiceSelection() {
         <p className="text-sm text-muted-foreground">
           This is the model that will be used.
         </p>
-        <Select defaultValue="eleven-flash-v2">
+        <Select 
+          value={model}
+          onValueChange={(value) => {
+            onModelChange(value)
+            onModelBlur()
+          }}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -141,6 +194,19 @@ export function VoiceSelection() {
             ))}
           </SelectContent>
         </Select>
+        {modelError && (
+          <p className="text-sm text-destructive">{modelError}</p>
+        )}
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <Checkbox id="manual-voice" />
+        <label
+          htmlFor="manual-voice"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Add Voice ID Manually
+        </label>
       </div>
     </div>
   )

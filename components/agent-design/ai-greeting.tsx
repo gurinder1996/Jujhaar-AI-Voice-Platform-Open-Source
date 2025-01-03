@@ -1,37 +1,49 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Shield } from "lucide-react"
+import { useParams } from "next/navigation"
+import { useAgentField } from "@/hooks/use-agent-field"
+import { useEffect } from "react"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
-interface AIGreetingProps {
-  agent?: any
-}
-
-export function AIGreeting({ agent }: AIGreetingProps) {
-  const [greeting, setGreeting] = useState("")
+export function AIGreeting() {
+  const { agentId } = useParams()
   const supabase = createClientComponentClient()
+  
+  const {
+    value: greeting,
+    error,
+    isUpdating,
+    onChange,
+    onBlur,
+    setValue
+  } = useAgentField(
+    agentId as string,
+    ['greeting'],
+    'greeting',
+    ''
+  )
 
+  // Fetch initial greeting value
   useEffect(() => {
-    if (agent) {
-      setGreeting(agent.greeting || "")
-    }
-  }, [agent])
-
-  const updateGreeting = async (newGreeting: string) => {
-    if (agent?.id) {
-      const { error } = await supabase
-        .from("agents")
-        .update({ greeting: newGreeting })
-        .eq("id", agent.id)
-
-      if (!error) {
-        setGreeting(newGreeting)
+    async function fetchGreeting() {
+      if (!agentId) return
+      
+      const { data, error } = await supabase
+        .from('agents')
+        .select('greeting')
+        .eq('id', agentId)
+        .single()
+      
+      if (data?.greeting) {
+        setValue(data.greeting)
       }
     }
-  }
+    
+    fetchGreeting()
+  }, [agentId, supabase, setValue])
 
   return (
     <Card className="p-6">
@@ -47,9 +59,11 @@ export function AIGreeting({ agent }: AIGreetingProps) {
         <div className="relative">
           <Textarea
             value={greeting}
-            onChange={(e) => updateGreeting(e.target.value)}
-            placeholder="Thank you for calling Jujhaar AI! How can I help you today?"
+            onChange={(e) => onChange(e.target.value)}
+            onBlur={onBlur}
+            placeholder="Thank you for calling! How can I help you today?"
             className="min-h-[100px] resize-none pr-24"
+            disabled={isUpdating}
           />
           <div className="absolute bottom-3 right-3 flex items-center gap-2 text-sm text-muted-foreground">
             <span className="inline-block h-4 w-4">
@@ -60,6 +74,9 @@ export function AIGreeting({ agent }: AIGreetingProps) {
             Scarlett (English)
           </div>
         </div>
+        {error && (
+          <p className="text-sm text-destructive">{error}</p>
+        )}
       </div>
     </Card>
   )

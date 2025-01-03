@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { useState } from "react"
 import { AIGreeting } from "@/components/agent-design/ai-greeting"
 import { PersonalityGuidelines } from "@/components/agent-design/personality-guidelines"
 import { FrequentlyAskedQuestions } from "@/components/agent-design/frequently-asked-questions"
@@ -9,8 +8,6 @@ import { TabButton } from "@/components/agent-design/tabs/tab-button"
 
 export default function AgentDesignPage() {
   const [activeTab, setActiveTab] = useState<"personality" | "faq">("personality")
-  const [currentAgent, setCurrentAgent] = useState(null)
-  const supabase = createClientComponentClient()
 
   return (
     <div className="space-y-8">
